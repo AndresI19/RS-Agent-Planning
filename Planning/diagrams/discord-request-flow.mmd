@@ -1,0 +1,26 @@
+sequenceDiagram
+    actor User
+    participant Discord
+    participant Bot as Discord Bot Service
+    participant GW as API Gateway
+    participant Agent as Agent Harness
+    participant RS as RuneScape Research Service
+    participant Cache as Redis Cache
+    participant Wiki as External APIs
+
+    User->>Discord: "!rs what's the best way to train slayer?"
+    Discord->>Bot: message event
+    Bot->>GW: POST /query {user, message, channel}
+    GW->>Agent: dispatch(query, context)
+    Agent->>RS: search_wiki("slayer training guide")
+    RS->>Cache: GET slayer_training_guide
+    Cache-->>RS: miss
+    RS->>Wiki: fetch wiki article
+    Wiki-->>RS: article content
+    RS->>Cache: SET slayer_training_guide (TTL 1h)
+    RS-->>Agent: structured data
+    Agent->>Agent: compose response via Claude API
+    Agent-->>GW: formatted response
+    GW-->>Bot: response text
+    Bot-->>Discord: post message
+    Discord-->>User: response

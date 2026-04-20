@@ -1,0 +1,15 @@
+sequenceDiagram
+    actor User
+    participant CD as Claude Desktop
+    participant MCP as MCP Server
+    participant Agent as Agent Harness
+    participant RS as RuneScape Research Service
+
+    User->>CD: "What drops does Zulrah have?"
+    CD->>MCP: tool call: runescape_research(query)
+    MCP->>Agent: dispatch(query)
+    Agent->>RS: search_wiki("Zulrah drops")
+    RS-->>Agent: structured drop table
+    Agent-->>MCP: formatted response
+    MCP-->>CD: tool result
+    CD-->>User: renders response in terminal

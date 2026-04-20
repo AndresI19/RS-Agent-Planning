@@ -1,0 +1,21 @@
+graph TD
+    subgraph Internet
+        DNS[Domain DNS] --> CF[Cloudflare CDN / DDoS Protection]
+        CF --> LB[Reverse Proxy — Caddy]
+    end
+
+    subgraph VPS["VPS — Production Server"]
+        LB -->|/api/*| GW[API Gateway Container]
+        LB -->|/mcp/*| MCP[MCP Server Container]
+        GW --> Agent[Agent Harness Container]
+        Agent --> RS[RuneScape Research Container]
+        RS --> Redis[(Redis Container)]
+        Agent --> PG[(PostgreSQL Container)]
+        Bot[Discord Bot Container] --> GW
+    end
+
+    subgraph External
+        Agent -->|Claude API| Anthropic[Anthropic API]
+        RS -->|wiki/GE/hiscores| RSAPI[RuneScape APIs]
+        Bot -->|events/messages| DiscordAPI[Discord API]
+    end

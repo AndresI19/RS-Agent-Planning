@@ -1,0 +1,28 @@
+graph TD
+    subgraph Inputs
+        A[Claude Desktop] -->|MCP protocol| G
+        B[Discord User] -->|Discord API| C[Discord Bot Service]
+        C -->|HTTP| G
+    end
+
+    subgraph Core["Core Backend"]
+        G[API Gateway / Router]
+        G -->|research request| H[Agent Harness]
+        H -->|tool calls| I[RuneScape Research Service]
+        H -->|compose response| J[Response Formatter]
+        I -->|query| K[(Cache — Redis)]
+        K -->|miss| L[External APIs & Wikis]
+    end
+
+    subgraph Outputs
+        J -->|text| A
+        J -->|text| C
+        J -->|audio| M[TTS Service]
+        M -->|voice stream| N[Discord Voice Channel]
+    end
+
+    subgraph Storage
+        O[(PostgreSQL)]
+        H -->|conversation history| O
+        G -->|rate limiting / sessions| O
+    end
