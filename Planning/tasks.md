@@ -3,7 +3,7 @@
 ## Phase 0 — Decisions & Setup
 > Resolve open questions before writing any code.
 
-- [ ] Choose OSRS-only, RS3-only, or both for v1
+- [x] Choose OSRS-only, RS3-only, or both for v1 → **RS3 for v1, OSRS in v2**
 - [ ] Choose Discord library: discord.py vs. discord.js
 - [ ] Choose TTS provider: Google TTS, ElevenLabs, or AWS Polly
 - [ ] Choose Claude Desktop integration method: MCP Server or API Proxy
@@ -119,7 +119,7 @@
 
 - [ ] Web UI (simple chat interface at the domain root)
 - [ ] User accounts and saved preferences
-- [ ] RS3 support (if v1 is OSRS-only)
+- [ ] OSRS support (RS3 shipped in v1; add OSRS wiki + GE + hiscores endpoints)
 - [ ] Price alert system ("notify me when Twisted Bow drops below X gp")
 - [ ] Clan/group features
 - [ ] Mobile app

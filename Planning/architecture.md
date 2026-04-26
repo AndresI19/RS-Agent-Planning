@@ -52,10 +52,11 @@ graph TD
 
 ### 3. RuneScape Research Service
 - Exposes tools the agent can call:
-  - `search_wiki(query)` — searches RS/OSRS wiki
-  - `get_item_price(item_name)` — GE price lookup
-  - `get_player_stats(username)` — hiscores lookup
-  - `get_quest_info(quest_name)` — quest details
+  - `search_wiki(query, game="rs3")` — searches RS3 wiki (OSRS added in v2)
+  - `get_item_price(item_name, game="rs3")` — GE price lookup
+  - `get_player_stats(username, game="rs3")` — hiscores lookup
+  - `get_quest_info(quest_name, game="rs3")` — quest details
+- All tools accept a `game` parameter to support OSRS in v2 without refactoring
 - Caches results in Redis (TTL varies by data type)
 - Technology: **Python** microservice
 

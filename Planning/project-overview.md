@@ -25,12 +25,21 @@ or as synthesized voice in a voice channel.
 
 ---
 
+## Game Scope
+
+**v1: RS3 only.** The RuneScape (RS3) wiki and Grand Exchange APIs are the primary data sources.
+
+**v2: Add OSRS.** OSRS support is planned and in-scope for the project. Tool interfaces use a `game` parameter from the start so OSRS endpoints can be added without a refactor.
+
+---
+
 ## Out of Scope (v1)
 
 - Account linking or player authentication
 - Real-time game data (live player positions, etc.)
 - Mobile app or web UI
-- Support for games other than RuneScape (OSRS + RS3 both in scope)
+- OSRS support (deferred to v2)
+- Games other than RuneScape
 
 ---
 
@@ -53,4 +62,5 @@ or as synthesized voice in a voice channel.
 - [ ] TTS provider: ElevenLabs, Google TTS, or AWS Polly
 - [ ] Hosting: VPS (DigitalOcean/Linode) vs. cloud-native (AWS/GCP)
 - [ ] Database: needed for v1 (conversation history, caching)?
-- [ ] OSRS-only, RS3-only, or both?
+- [x] Language: **Python** (`mcp` SDK + Anthropic SDK)
+- [x] Game scope: **RS3 for v1**, OSRS deferred to v2
