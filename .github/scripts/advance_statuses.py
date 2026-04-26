@@ -6,7 +6,7 @@ Triggered by the advance-statuses GitHub Actions workflow on every issue close.
 Reads "## Blocked By" sections written by git-plan.py to determine dependencies.
 
 Required env vars (set by the workflow):
-  GH_TOKEN        — classic PAT with repo + project scopes
+  GH_TOKEN        — classic PAT or fine-grained token with repo + project access
   PROJECT_OWNER   — GitHub username that owns the project
   PROJECT_NUMBER  — integer project number (e.g. "5")
 """
@@ -14,34 +14,65 @@ Required env vars (set by the workflow):
 import json
 import os
 import re
-import subprocess
 import sys
 
+import requests
 
 OWNER          = os.environ["PROJECT_OWNER"]
 PROJECT_NUMBER = int(os.environ["PROJECT_NUMBER"])
 REPO           = os.environ.get("GITHUB_REPOSITORY", f"{OWNER}/RS-Agent-Planning")
+TOKEN          = os.environ["GH_TOKEN"]
+
+GRAPHQL_URL = "https://api.github.com/graphql"
+REST_BASE   = "https://api.github.com"
 
 
-def gh(*args):
-    result = subprocess.run(["gh", *args], capture_output=True, text=True)
-    if result.returncode != 0:
-        print(f"ERROR: gh {' '.join(str(a) for a in args[:4])} failed")
-        print(result.stderr.strip())
+def _headers():
+    return {
+        "Authorization": f"Bearer {TOKEN}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+
+
+def _check(resp, context=""):
+    if resp.status_code == 401:
+        print("ERROR: GH_TOKEN is invalid or has expired.")
+        print("  Update the PROJECT_TOKEN repository secret with a fresh token.")
         sys.exit(1)
-    return result.stdout.strip()
+    if not resp.ok:
+        print(f"ERROR: GitHub API {resp.status_code}{f' ({context})' if context else ''}")
+        try:
+            print(f"  {resp.json().get('message', resp.text[:300])}")
+        except Exception:
+            print(f"  {resp.text[:300]}")
+        sys.exit(1)
 
 
-def graphql(query):
-    return json.loads(gh("api", "graphql", "-f", f"query={query}"))
+def graphql(query, variables=None):
+    resp = requests.post(
+        GRAPHQL_URL,
+        headers={**_headers(), "Content-Type": "application/json"},
+        json={"query": query, "variables": variables or {}},
+        timeout=30,
+    )
+    _check(resp, "graphql")
+    data = resp.json()
+    if "errors" in data:
+        print(f"ERROR: GraphQL errors: {data['errors']}")
+        sys.exit(1)
+    return data
+
+
+def is_closed(issue_number):
+    resp = requests.get(f"{REST_BASE}/repos/{REPO}/issues/{issue_number}",
+                        headers=_headers(), timeout=10)
+    _check(resp, f"issue #{issue_number}")
+    return resp.json().get("state", "").upper() == "CLOSED"
 
 
 def parse_blocked_by(body):
-    """Extract issue numbers from a '## Blocked By' section in an issue body.
-
-    Expects lines like '- #6 Some title' under the heading.
-    Stops parsing at the next markdown heading.
-    """
+    """Extract issue numbers from a '## Blocked By' section in an issue body."""
     if not body or "## Blocked By" not in body:
         return []
     section = body.split("## Blocked By", 1)[1]
@@ -49,49 +80,43 @@ def parse_blocked_by(body):
     return [int(m) for m in re.findall(r"#(\d+)", section)]
 
 
-def is_closed(issue_number):
-    state = gh("issue", "view", str(issue_number),
-               "--repo", REPO, "--json", "state", "--jq", ".state")
-    return state.strip().upper() == "CLOSED"
-
-
 def main():
-    q = f"""
-query {{
-  user(login: "{OWNER}") {{
-    projectV2(number: {PROJECT_NUMBER}) {{
+    query = """
+query($login: String!, $number: Int!) {
+  user(login: $login) {
+    projectV2(number: $number) {
       id
-      fields(first: 20) {{
-        nodes {{
-          ... on ProjectV2SingleSelectField {{
+      fields(first: 20) {
+        nodes {
+          ... on ProjectV2SingleSelectField {
             id name
-            options {{ id name }}
-          }}
-        }}
-      }}
-      items(first: 100) {{
-        nodes {{
+            options { id name }
+          }
+        }
+      }
+      items(first: 100) {
+        nodes {
           id
-          fieldValues(first: 20) {{
-            nodes {{
-              ... on ProjectV2ItemFieldSingleSelectValue {{
+          fieldValues(first: 20) {
+            nodes {
+              ... on ProjectV2ItemFieldSingleSelectValue {
                 name
-                field {{ ... on ProjectV2SingleSelectField {{ name }} }}
-              }}
-            }}
-          }}
-          content {{
-            ... on Issue {{ number title state body }}
-          }}
-        }}
-      }}
-    }}
-  }}
-}}"""
-    data = graphql(q)["data"]["user"]["projectV2"]
-    project_id = data["id"]
+                field { ... on ProjectV2SingleSelectField { name } }
+              }
+            }
+          }
+          content {
+            ... on Issue { number title state body }
+          }
+        }
+      }
+    }
+  }
+}"""
+    data    = graphql(query, {"login": OWNER, "number": PROJECT_NUMBER})
+    project = data["data"]["user"]["projectV2"]
 
-    status_field = next((n for n in data["fields"]["nodes"] if n.get("name") == "Status"), None)
+    status_field = next((n for n in project["fields"]["nodes"] if n.get("name") == "Status"), None)
     if not status_field:
         print("Status field not found — nothing to do.")
         return
@@ -103,8 +128,20 @@ query {{
         print("'Ready' option not found — nothing to do.")
         return
 
+    mutation = """
+mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+  updateProjectV2ItemFieldValue(input: {
+    projectId: $projectId
+    itemId: $itemId
+    fieldId: $fieldId
+    value: { singleSelectOptionId: $optionId }
+  }) {
+    projectV2Item { id }
+  }
+}"""
+
     advanced = 0
-    for item in data["items"]["nodes"]:
+    for item in project["items"]["nodes"]:
         content = item.get("content") or {}
         if not content or content.get("state", "").upper() == "CLOSED":
             continue
@@ -122,18 +159,12 @@ query {{
             continue
 
         if all(is_closed(n) for n in blockers):
-            mutation = f"""
-mutation {{
-  updateProjectV2ItemFieldValue(input: {{
-    projectId: "{project_id}"
-    itemId: "{item['id']}"
-    fieldId: "{field_id}"
-    value: {{ singleSelectOptionId: "{ready_id}" }}
-  }}) {{
-    projectV2Item {{ id }}
-  }}
-}}"""
-            gh("api", "graphql", "-f", f"query={mutation}")
+            graphql(mutation, {
+                "projectId": project["id"],
+                "itemId":    item["id"],
+                "fieldId":   field_id,
+                "optionId":  ready_id,
+            })
             print(f"  → #{content['number']} {content['title']}: Todo → Ready")
             advanced += 1
 
