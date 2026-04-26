@@ -7,8 +7,8 @@
 - [ ] Choose Discord library: discord.py vs. discord.js
 - [ ] Choose TTS provider: Google TTS, ElevenLabs, or AWS Polly
 - [ ] Choose Claude Desktop integration method: MCP Server or API Proxy
-- [ ] Choose hosting provider and server size
-- [ ] Register domain name
+- [x] Choose hosting provider and server size → **local / self-hosted VM; cloud hosting deferred to post-full-stack**
+- [x] Register domain name → **deferred; "reldo" if local reverse proxy is ever needed**
 - [ ] Create Anthropic API account and confirm tier/rate limits
 - [ ] Create Discord application and bot token (dev + prod)
 - [ ] Set up GitHub org or user for project repos

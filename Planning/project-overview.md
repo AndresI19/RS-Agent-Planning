@@ -60,7 +60,9 @@ or as synthesized voice in a voice channel.
 - [ ] Claude Desktop integration method: MCP server vs. API proxy
 - [ ] Discord library: discord.py vs. discord.js
 - [ ] TTS provider: ElevenLabs, Google TTS, or AWS Polly
-- [ ] Hosting: VPS (DigitalOcean/Linode) vs. cloud-native (AWS/GCP)
+- [x] Hosting: **local / self-hosted VM throughout development; cloud provider deferred**
+- [x] Domain: **deferred; "reldo" if local reverse proxy is needed**
+- [x] Caching: **in-memory for Phase 1; Redis deferred until explicitly needed**
 - [ ] Database: needed for v1 (conversation history, caching)?
 - [x] Language: **Python** (`mcp` SDK + Anthropic SDK)
 - [x] Game scope: **RS3 for v1**, OSRS deferred to v2
