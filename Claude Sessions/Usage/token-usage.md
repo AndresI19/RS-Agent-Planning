@@ -14,7 +14,7 @@
 | 2026-04-19 | f091be47 | 50 | 3,570 | 316,841 | 9,061 |
 | 2026-04-19 | f744d41c | 429 | 80,652 | 11,288,740 | 170,598 |
 | 2026-04-21 | b4788b84 | 284 | 54,025 | 11,175,405 | 213,404 |
-| 2026-04-25 | cf328501 | 779 | 196,803 | 43,628,789 | 602,370 |
+| 2026-04-25 | cf328501 | 786 | 198,900 | 44,414,519 | 612,266 |
 
 ---
 
@@ -22,11 +22,11 @@
 
 | Metric | Tokens |
 |--------|-------:|
-| **Input** | 1,840 |
-| **Output** | 390,759 |
-| **Cache Read** | 71,330,152 |
-| **Cache Write** | 1,074,505 |
-| **Grand Total** | 73,797,256 |
+| **Input** | 1,847 |
+| **Output** | 392,856 |
+| **Cache Read** | 72,115,882 |
+| **Cache Write** | 1,084,401 |
+| **Grand Total** | 74,595,986 |
 
 ---
 
@@ -34,4 +34,4 @@
 
 - Cache read tokens are significantly cheaper than input tokens — high cache read ratios indicate good prompt caching efficiency.
 - Updated by running the token extraction script against `~/.claude/projects/` and `~/.claude/sessions/` JSONL files.
-- Last updated: 2026-04-25
+- Last updated: 2026-04-26
