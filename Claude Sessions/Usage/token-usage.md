@@ -15,7 +15,6 @@
 | 2026-04-19 | f744d41c | 429 | 80,652 | 11,288,740 | 170,598 |
 | 2026-04-21 | b4788b84 | 284 | 54,025 | 11,175,405 | 213,404 |
 | 2026-04-25 | cf328501 | 786 | 198,900 | 44,414,519 | 612,266 |
-| 2026-04-26 | d5b5a6f9 | — | — | — | — |
 
 ---
 
@@ -35,4 +34,4 @@
 
 - Cache read tokens are significantly cheaper than input tokens — high cache read ratios indicate good prompt caching efficiency.
 - Updated by running the token extraction script against `~/.claude/projects/` and `~/.claude/sessions/` JSONL files.
-- Last updated: 2026-04-27
+- Last updated: 2026-05-02
