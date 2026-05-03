@@ -41,6 +41,14 @@ Resolved decisions are recorded here with rationale. Open decisions remain in `p
 
 ---
 
+### Game disambiguation: require explicit `game` on every MCP tool
+
+**Decision:** Every MCP tool's `inputSchema` makes `game` a required parameter (no default). Each tool's description includes the sentence: *"If the user has not specified which game (RS3 or OSRS), ask them before calling this tool."*
+
+**Rationale:** Prior behavior defaulted `game` to `"rs3"`, so ambiguous prompts like "What's the price of an abyssal whip?" silently returned RS3 results even when the user might have meant OSRS. Schema-required prevents silent omission; the description guides the LLM to clarify rather than guess when the prompt is ambiguous. Together they ensure the agent asks for game disambiguation rather than confidently producing a wrong-game answer. Surfaced during #17 QA testfest where multiple ambiguous prompts produced RS3-flavored answers without any clarification turn.
+
+---
+
 ## Open
 
 - Claude Desktop integration method: MCP server (recommended) vs. API proxy
