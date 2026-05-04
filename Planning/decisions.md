@@ -49,6 +49,21 @@ Resolved decisions are recorded here with rationale. Open decisions remain in `p
 
 ---
 
+### Profanity handling: pass through verbatim
+
+**Decision:** The MCP server passes through input and output verbatim across all three channels where profanity may appear: Jagex-censored usernames (honor whatever the hiscores API returns), wiki content (render canonical lore as-is), and freeform user queries (forward unmodified). No content scrubbing or refusal at the MCP layer.
+
+**Rationale:** The MCP server is a data layer, not a content-moderation layer. Wiki redaction would distort canonical source material and break legitimate references. Selective per-channel filtering would create inconsistency where the same word renders one way in a wiki result and another way in a query echo. The MCP server also lacks the authorial context needed to filter correctly — it cannot distinguish strings the *user* typed (potentially filter-worthy) from strings the *data sources* returned (canonical, safe to echo); only the consuming agent has that context. Surfaced during #17 QA testfest as an undefined policy question.
+
+**Consumer responsibilities:** Each agent that calls the MCP server is responsible for its own content policy at its own boundary, because only the consumer knows authorial origin.
+
+- *Claude Desktop integration*: Anthropic's safety layer applies to model output, including refusing genuinely abusive freeform queries before they reach the MCP server. No additional filter is needed inside the integration.
+- *Discord bot (future, Phase 2+)*: the bot will be a separate agent that doesn't go through Claude Desktop's safety layer, so it must implement its own filtering. Two filter points are required: an **input filter** at the Discord-message boundary (rejects user-typed slurs before they reach the LLM or the MCP server) and an **output filter** at the bot's reply boundary (last-line defense before posting back to chat). Specific filter implementation — community deny list, Anthropic's Moderation API, a discord.py library, or some combination — is deferred to the Discord-bot phase.
+
+The MCP server stays uniform across consumers; the moderation surface lives at each consuming agent's I/O boundary, not in the data layer.
+
+---
+
 ## Open
 
 - Claude Desktop integration method: MCP server (recommended) vs. API proxy
