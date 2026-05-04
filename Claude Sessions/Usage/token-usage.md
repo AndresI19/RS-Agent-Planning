@@ -34,4 +34,4 @@
 
 - Cache read tokens are significantly cheaper than input tokens — high cache read ratios indicate good prompt caching efficiency.
 - Updated by running the token extraction script against `~/.claude/projects/` and `~/.claude/sessions/` JSONL files.
-- Last updated: 2026-05-03
+- Last updated: 2026-05-04
