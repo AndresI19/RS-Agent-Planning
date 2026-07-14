@@ -28,7 +28,8 @@
 | 2026-07-10 | ab8c36b0 | 57,232 | 944,307 | 186,407,127 | 7,493,143 |
 | 2026-07-12 | ebaf825b | 381,113 | 6,508,823 | 1,999,660,451 | 11,135,772 |
 | 2026-07-12 | f827dce1 | 31,674 | 233,900 | 26,471,067 | 469,290 |
-| 2026-07-13 | 98eec59c | 2,892 | 1,365,979 | 699,608,888 | 2,648,745 |
+| 2026-07-13 | 98eec59c | 2,916 | 1,374,442 | 700,699,785 | 2,671,298 |
+| 2026-07-14 | 501b8af5 | 7,248 | 6,025,856 | 1,867,927,873 | 11,972,586 |
 
 ---
 
@@ -36,11 +37,11 @@
 
 | Metric | Tokens |
 |--------|-------:|
-| **Input** | 1,611,778 |
-| **Output** | 25,844,811 |
-| **Cache Read** | 6,101,229,942 |
-| **Cache Write** | 123,190,725 |
-| **Grand Total** | 6,251,877,256 |
+| **Input** | 1,619,050 |
+| **Output** | 31,879,130 |
+| **Cache Read** | 7,970,248,712 |
+| **Cache Write** | 135,185,864 |
+| **Grand Total** | 8,138,932,756 |
 
 ---
 
@@ -50,4 +51,4 @@
 - Updated by running the token extraction script against the workspace session JSONL files under `~/.claude/projects/`.
 - The tracker is scoped to workspace project directories (`~/.claude/projects/*claude-workspace*/`). Earlier home-directory sessions (from before the launch cwd moved into the workspace) are out of scope and not included — the prior 2026-05-05 totals were that smaller home-era slice.
 - This regeneration is the first since the tracker's session-path glob was fixed; the large jump versus the prior file reflects workspace sessions the broken glob had been silently missing, not a usage spike.
-- Last updated: 2026-07-13
+- Last updated: 2026-07-14
