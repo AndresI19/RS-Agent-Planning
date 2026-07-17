@@ -30,22 +30,29 @@
 | 2026-07-12 | f827dce1 | 31,674 | 233,900 | 26,471,067 | 469,290 |
 | 2026-07-13 | 98eec59c | 2,916 | 1,374,442 | 700,699,785 | 2,671,298 |
 | 2026-07-14 | 501b8af5 | 7,346 | 6,075,657 | 1,899,374,411 | 14,763,999 |
-| 2026-07-14 | 6839904f | 3,178 | 2,062,965 | 794,811,852 | 6,421,551 |
-| 2026-07-14 | 6e884c19 | 1,754 | 1,138,616 | 273,381,945 | 2,887,276 |
-| 2026-07-14 | cb89924a | 1,428 | 1,739,042 | 238,368,286 | 4,451,434 |
 | 2026-07-14 | e9739318 | 1,076 | 567,501 | 116,251,073 | 2,286,128 |
-
----
+| 2026-07-15 | 84c51018 | 1,052 | 910,748 | 150,460,572 | 2,329,545 |
+| 2026-07-15 | 9e5062d3 | 1,056 | 915,540 | 150,503,942 | 3,339,555 |
+| 2026-07-15 | cb89924a | 2,032 | 2,317,289 | 481,713,465 | 9,379,849 |
+| 2026-07-16 | 37c14509 | 1,356 | 753,348 | 173,868,294 | 2,572,652 |
+| 2026-07-16 | 39899ccb | 1,384 | 593,216 | 169,864,530 | 2,341,101 |
+| 2026-07-16 | 5b586922 | 2,066 | 1,400,223 | 419,772,965 | 13,356,616 |
+| 2026-07-16 | 6839904f | 9,158 | 7,722,091 | 2,240,699,576 | 27,357,719 |
+| 2026-07-16 | 6e884c19 | 1,754 | 1,138,616 | 273,381,945 | 2,887,276 |
+| 2026-07-16 | a28f6a55 | 604 | 470,073 | 44,411,502 | 581,344 |
+| 2026-07-16 | e420b9d8 | 934 | 461,303 | 71,312,615 | 861,773 |
+| 2026-07-17 | 6ebc1211 | 3,138 | 1,903,441 | 705,592,844 | 9,676,794 |
+| 2026-07-17 | a7abaebc | 1,318 | 795,537 | 147,622,616 | 2,392,130 |
 
 ## Totals
 
 | Metric | Tokens |
 |--------|-------:|
-| **Input** | 1,626,584 |
-| **Output** | 37,437,055 |
-| **Cache Read** | 9,424,508,406 |
-| **Cache Write** | 154,023,666 |
-| **Grand Total** | 9,617,595,711 |
+| **Input** | 1,646,076 |
+| **Output** | 51,877,857 |
+| **Cache Read** | 13,147,151,189 |
+| **Cache Write** | 217,339,759 |
+| **Grand Total** | 13,418,014,881 |
 
 ---
 
@@ -55,4 +62,4 @@
 - Updated by running the token extraction script against the workspace session JSONL files under `~/.claude/projects/`.
 - The tracker is scoped to workspace project directories (`~/.claude/projects/*claude-workspace*/`). Earlier home-directory sessions (from before the launch cwd moved into the workspace) are out of scope and not included — the prior 2026-05-05 totals were that smaller home-era slice.
 - This regeneration is the first since the tracker's session-path glob was fixed; the large jump versus the prior file reflects workspace sessions the broken glob had been silently missing, not a usage spike.
-- Last updated: 2026-07-14
+- Last updated: 2026-07-17
